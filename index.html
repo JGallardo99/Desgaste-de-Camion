@@ -1,0 +1,778 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <link type="text/css" rel="stylesheet" href="style.css"/>
+  </head>
+  <body>
+    <!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Seguimiento de Desgaste de Camión</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f3f4f6; /* bg-gray-100 */
+            color: #1f2937; /* text-gray-800 */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
+
+        #app {
+            background-color: #fff; /* bg-white */
+            border-radius: 0.5rem; /* rounded-lg */
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); /* shadow-md */
+            padding: 2rem; /* p-8 */
+            width: 100%;
+            max-width: 4xl; /* max-w-4xl */
+            box-sizing: border-box;
+        }
+
+        h1 {
+            color: #1e293b; /* text-gray-900 */
+            font-size: 2.25rem; /* text-3xl */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 1.5rem; /* mb-6 */
+            text-align: center;
+        }
+
+        h2 {
+            color: #334155; /* text-gray-700 */
+            font-size: 1.5rem; /* text-2xl */
+            font-weight: 500; /* font-medium */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        #registro-form {
+            margin-bottom: 2rem; /* mb-8 */
+        }
+
+        form {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem; /* gap-4 */
+        }
+
+        form div {
+            flex: 1;
+            min-width: 250px; /* Asegura que los inputs no se compriman demasiado */
+            display: flex; /* Añadido para el label y el input */
+            flex-direction: column; /* Añadido para el label y el input */
+            align-items: flex-start; /* Alinea el label arriba del input */
+        }
+
+        label {
+            color: #4b5563; /* text-gray-600 */
+            font-size: 0.875rem; /* text-sm */
+            font-weight: 500; /* font-medium */
+            margin-bottom: 0.5rem; /* mb-2 */
+            display: block; /* Asegura que el label se muestre como bloque */
+        }
+
+        input[type="number"],
+        input[type="text"],
+        input[type="date"] {
+            border: 1px solid #d1d5db; /* border-gray-300 */
+            border-radius: 0.375rem; /* rounded-md */
+            padding: 0.75rem; /* p-3 */
+            width: 100%;
+            font-size: 1rem; /* text-base */
+            transition: border-color 0.15s ease-in-out, shadow-sm 0.15s ease-in-out; /* Transiciones */
+            box-sizing: border-box; /* Importante para que el padding no afecte el ancho total */
+        }
+
+        input[type="number"]:focus,
+        input[type="text"]:focus,
+        input[type="date"]:focus {
+            outline: none;
+            border-color: #3b82f6; /* border-blue-500 */
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.2); /* ring-blue-200 */
+        }
+
+        button {
+            background-color: #3b82f6; /* bg-blue-500 */
+            color: #fff; /* text-white */
+            padding: 0.75rem 1.5rem; /* py-3 px-6 */
+            border-radius: 0.375rem; /* rounded-md */
+            font-size: 1rem; /* text-base */
+            font-weight: 500; /* font-medium */
+            cursor: pointer;
+            transition: background-color 0.2s ease-in-out, transform 0.1s ease-in-out, box-shadow 0.15s ease-in-out; /* Transiciones */
+            border: none;
+            display: inline-flex; /* Para el icono y el texto */
+            align-items: center; /* Centrar verticalmente el icono y el texto */
+            gap: 0.5rem; /* Espacio entre el icono y el texto */
+        }
+
+        button:hover {
+            background-color: #2563eb; /* bg-blue-700 */
+        }
+
+        button:active {
+            background-color: #1e40af; /* bg-blue-800 */
+            transform: translateY(1px); /* Simula el efecto de presionar */
+            box-shadow: 0 0 5px rgba(0, 0, 0, 0.3); /* Añade una sombra interna */
+        }
+
+        #datos-camion {
+            margin-top: 2rem; /* mt-8 */
+            padding: 1.5rem; /* p-6 */
+            background-color: #f9fafb; /* bg-gray-50 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+        }
+
+        #datos-camion h3 {
+            color: #4b5563; /* text-gray-600 */
+            font-size: 1.25rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        #datos-camion p {
+            font-size: 1rem; /* text-base */
+            color: #6b7280; /* text-gray-500 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+
+        #proyeccion-desgaste {
+            margin-top: 2rem; /* mt-8 */
+            padding: 1.5rem; /* p-6 */
+            background-color: #f9fafb; /* bg-gray-50 */
+            border-radius: 0.5rem; /* rounded-lg */
+            border: 1px solid #e5e7eb; /* border-gray-200 */
+        }
+
+        #proyeccion-desgaste h3 {
+            color: #4b5563; /* text-gray-600 */
+            font-size: 1.25rem; /* text-lg */
+            font-weight: 600; /* font-semibold */
+            margin-bottom: 1rem; /* mb-4 */
+        }
+
+        #proyeccion-desgaste p {
+            font-size: 1rem; /* text-base */
+            color: #6b7280; /* text-gray-500 */
+            margin-bottom: 0.75rem; /* mb-3 */
+        }
+
+        #mensaje-error {
+            color: #dc2626; /* text-red-500 */
+            font-size: 1rem; /* text-base */
+            margin-top: 1rem; /* mt-4 */
+            padding: 0.75rem; /* p-3 */
+            background-color: #fef2f2; /* bg-red-50 */
+            border-radius: 0.375rem; /* rounded-md */
+            border: 1px solid #fecaca; /* border-red-200 */
+            display: none; /* Inicialmente oculto */
+        }
+
+        #mensaje-error.mostrar {
+            display: block; /* Se muestra cuando tiene la clase 'mostrar' */
+        }
+
+        .icono-camion {
+            width: 24px; /* Tamaño del icono */
+            height: 24px;
+            margin-right: 0.5rem; /* Espacio a la derecha del icono */
+        }
+
+        #historial-registros {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        #historial-registros h2 {
+            color: #4b5563;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        #historial-registros ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        #historial-registros li {
+            background-color: #fff;
+            padding: 1rem;
+            border-radius: 0.375rem;
+            margin-bottom: 0.75rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+            font-size: 1rem;
+            color: #6b7280;
+        }
+
+        #historial-registros li:last-child {
+            margin-bottom: 0;
+        }
+
+        #graficos-desgaste {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #f9fafb;
+            border-radius: 0.5rem;
+            border: 1px solid #e5e7eb;
+        }
+
+        #graficos-desgaste h2 {
+            color: #4b5563;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        #graficos-desgaste canvas {
+            width: 100%;
+            height: 300px;
+            margin-bottom: 1rem;
+            border: 1px solid #e5e7eb;
+            border-radius: 0.375rem;
+            background-color: #fff;
+        }
+
+        .alert {
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 0.375rem;
+            font-size: 1rem;
+        }
+
+        .alert-success {
+            background-color: #f0fdf4;
+            border: 1px solid #d6f1e5;
+            color: #15803d;
+        }
+
+        .alert-warning {
+            background-color: #fefce8;
+            border: 1px solid #fef3c7;
+            color: #854d0e;
+        }
+
+        .tabla-registros {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+            border-radius: 0.5rem;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1), 0 1px 2px rgba(0, 0, 0, 0.06);
+            border: 1px solid #e5e7eb;
+        }
+
+        .tabla-registros thead th {
+            background-color: #f7fafc;
+            color: #4b5563;
+            padding: 0.75rem 1rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 2px solid #e5e7eb;
+            font-size: 0.875rem;
+        }
+
+        .tabla-registros tbody td {
+            background-color: #fff;
+            color: #6b7280;
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid #f3f4f6;
+            font-size: 1rem;
+        }
+
+        .tabla-registros tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        .tabla-registros tbody tr:hover {
+            background-color: #f7fafc;
+        }
+
+        .acciones-tabla {
+            display: flex;
+            gap: 0.5rem;
+            justify-content: flex-start;
+        }
+
+        .boton-accion {
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            border: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .boton-editar {
+            background-color: #f59e0b;
+            color: #fff;
+        }
+
+        .boton-editar:hover {
+            background-color: #d97706;
+        }
+
+        .boton-eliminar {
+            background-color: #ef4444;
+            color: #fff;
+        }
+
+        .boton-eliminar:hover {
+            background-color: #dc2626;
+        }
+
+        .icono-boton {
+            width: 16px;
+            height: 16px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/Chart.min.css">
+</head>
+<body>
+    <div id="app">
+        <h1>Seguimiento de Desgaste de Camión</h1>
+
+        <form id="registro-form">
+            <div>
+                <label for="kilometraje">Kilometraje (km):</label>
+                <input type="number" id="kilometraje" name="kilometraje" required min="0">
+            </div>
+            <div>
+                <label for="horas-uso">Horas de Uso:</label>
+                <input type="number" id="horas-uso" name="horas-uso" required min="0">
+            </div>
+            <div>
+                <label for="condiciones-operacion">Condiciones de Operación:</label>
+                <input type="text" id="condiciones-operacion" name="condiciones-operacion" required>
+            </div>
+             <div>
+                <label for="fecha-registro">Fecha de Registro:</label>
+                <input type="date" id="fecha-registro" name="fecha-registro" required>
+            </div>
+            <button type="submit">
+                <img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/truck.svg" alt="Icono de Camión" class="icono-camion">
+                Registrar Datos
+            </button>
+        </form>
+
+        <div id="mensaje-error"></div>
+        <div id="mensaje-exito" class="alert alert-success" style="display: none;"></div>
+        <div id="mensaje-alerta" class="alert alert-warning" style="display: none;"></div>
+
+        <div id="datos-camion">
+            <h2>Datos del Camión</h2>
+            <p><strong>Kilometraje:</strong> <span id="kilometraje-actual">0</span> km</p>
+            <p><strong>Horas de Uso:</strong> <span id="horas-uso-actual">0</span> horas</p>
+            <p><strong>Condiciones de Operación:</strong> <span id="condiciones-operacion-actual">N/A</span></p>
+            <p><strong>Fecha de Registro:</strong> <span id="fecha-registro-actual">N/A</span></p>
+        </div>
+
+        <div id="proyeccion-desgaste">
+            <h2>Proyección de Desgaste</h2>
+            <p><strong>Desgaste Estimado (Kilometraje):</strong> <span id="desgaste-kilometraje">0</span> km</p>
+            <p><strong>Desgaste Estimado (Horas de Uso):</strong> <span id="desgaste-horas">0</span> horas</p>
+            <p><strong>Recomendación de Mantenimiento:</strong> <span id="recomendacion-mantenimiento">N/A</span></p>
+        </div>
+
+        <div id="historial-registros">
+            <h2>Historial de Registros</h2>
+            <ul id="lista-registros"></ul>
+            <table id="tabla-registros" class="tabla-registros" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Kilometraje (km)</th>
+                        <th>Horas de Uso</th>
+                        <th>Condiciones</th>
+                        <th>Acciones</th>
+                    </tr>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+
+        <div id="graficos-desgaste">
+            <h2>Gráficos de Desgaste</h2>
+            <canvas id="grafico-kilometraje"></canvas>
+            <canvas id="grafico-horas-uso"></canvas>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        const registroForm = document.getElementById('registro-form');
+        const mensajeError = document.getElementById('mensaje-error');
+        const mensajeExito = document.getElementById('mensaje-exito');
+        const mensajeAlerta = document.getElementById('mensaje-alerta');
+
+        const kilometrajeActualSpan = document.getElementById('kilometraje-actual');
+        const horasUsoActualSpan = document.getElementById('horas-uso-actual');
+        const condicionesOperacionActualSpan = document.getElementById('condiciones-operacion-actual');
+        const fechaRegistroActualSpan = document.getElementById('fecha-registro-actual');
+
+        const desgasteKilometrajeSpan = document.getElementById('desgaste-kilometraje');
+        const desgasteHorasSpan = document.getElementById('desgaste-horas');
+        const recomendacionMantenimientoSpan = document.getElementById('recomendacion-mantenimiento');
+
+        const listaRegistros = document.getElementById('lista-registros');
+        const tablaRegistrosElement = document.getElementById('tabla-registros');
+        const tablaRegistrosBody = tablaRegistrosElement.querySelector('tbody');
+
+        const graficoKilometrajeCtx = document
+            .getElementById('grafico-kilometraje')
+            .getContext('2d');
+        const graficoHorasUsoCtx = document.getElementById('grafico-horas-uso').getContext('2d');
+
+        let kilometrajeAcumulado = 0;
+        let horasUsoAcumuladas = 0;
+        let registros = [];
+        let graficoKilometraje, graficoHorasUso;
+
+        function mostrarMensaje(tipo, mensaje) {
+            const mensajeElement =
+                tipo === 'error'
+                    ? mensajeError
+                    : tipo === 'exito'
+                    ? mensajeExito
+                    : mensajeAlerta;
+            mensajeElement.textContent = mensaje;
+            mensajeElement.style.display = 'block';
+            setTimeout(() => {
+                mensajeElement.style.display = 'none';
+            }, 5000);
+        }
+
+        function inicializarGraficos() {
+            graficoKilometraje = new Chart(graficoKilometrajeCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Kilometraje Acumulado',
+                        data: [],
+                        backgroundColor: '#3b82f6',
+                        borderColor: '#3b82f6',
+                        fill: false,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                    }, ],
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Kilometraje Acumulado a lo largo del tiempo',
+                        fontColor: '#1f2937',
+                        fontSize: 16,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Fecha',
+                                fontColor: '#4b5563',
+                                fontSize: 14,
+                            },
+                            ticks: {
+                                fontColor: '#6b7280',
+                            },
+                            grid: {
+                                color: '#e5e7eb',
+                            },
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Kilometraje (km)',
+                                fontColor: '#4b5563',
+                                fontSize: 14,
+                            },
+                            ticks: {
+                                fontColor: '#6b7280',
+                            },
+                            grid: {
+                                color: '#e5e7eb',
+                            },
+                        },
+                    },
+                    legend: {
+                        display: false,
+                    },
+                },
+            });
+
+            graficoHorasUso = new Chart(graficoHorasUsoCtx, {
+                type: 'line',
+                data: {
+                    labels: [],
+                    datasets: [{
+                        label: 'Horas de Uso Acumuladas',
+                        data: [],
+                        backgroundColor: '#10b981',
+                        borderColor: '#10b981',
+                        fill: false,
+                        pointRadius: 5,
+                        pointHoverRadius: 7,
+                    }, ],
+                },
+                options: {
+                    responsive: true,
+                    title: {
+                        display: true,
+                        text: 'Horas de Uso Acumuladas a lo largo del tiempo',
+                        fontColor: '#1f2937',
+                        fontSize: 16,
+                    },
+                    scales: {
+                        x: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Fecha',
+                                fontColor: '#4b5563',
+                                fontSize: 14,
+                            },
+                            ticks: {
+                                fontColor: '#6b7280',
+                            },
+                            grid: {
+                                color: '#e5e7eb',
+                            },
+                        },
+                        y: {
+                            display: true,
+                            title: {
+                                display: true,
+                                text: 'Horas de Uso',
+                                fontColor: '#4b5563',
+                                fontSize: 14,
+                            },
+                            ticks: {
+                                fontColor: '#6b7280',
+                            },
+                            grid: {
+                                color: '#e5e7eb',
+                            },
+                        },
+                    },
+                    legend: {
+                        display: false,
+                    },
+                },
+            });
+        }
+
+        function actualizarGraficos() {
+            if (!graficoKilometraje || !graficoHorasUso) {
+                inicializarGraficos();
+            }
+
+            const fechas = registros.map((registro) => registro.fechaRegistro);
+            const kilometrajes = registros.map((registro) => registro.kilometrajeAcumulado);
+            const horasUso = registros.map((registro) => registro.horasUsoAcumuladas);
+
+            graficoKilometraje.data.labels = fechas;
+            graficoKilometraje.data.datasets[0].data = kilometrajes;
+            graficoKilometraje.update();
+
+            graficoHorasUso.data.labels = fechas;
+            graficoHorasUso.data.datasets[0].data = horasUso;
+            graficoHorasUso.update();
+        }
+
+        function agregarRegistroALista(registro) {
+            const nuevoRegistro = document.createElement('li');
+            nuevoRegistro.innerHTML = `
+                <strong>Fecha:</strong> ${registro.fechaRegistro},
+                <strong>Kilometraje:</strong> ${registro.kilometraje} km,
+                <strong>Horas de Uso:</strong> ${registro.horasUso} horas,
+                <strong>Condiciones:</strong> ${registro.condicionesOperacion}
+            `;
+            listaRegistros.appendChild(nuevoRegistro);
+        }
+
+        function agregarRegistroATabla(registro) {
+            const nuevaFila = tablaRegistrosBody.insertRow();
+            const fechaCell = nuevaFila.insertCell();
+            const kilometrajeCell = nuevaFila.insertCell();
+            const horasUsoCell = nuevaFila.insertCell();
+            const condicionesCell = nuevaFila.insertCell();
+            const accionesCell = nuevaFila.insertCell();
+
+            fechaCell.textContent = registro.fechaRegistro;kilometrajeCell.textContent = registro.kilometraje;
+            horasUsoCell.textContent = registro.horasUso;
+            condicionesCell.textContent = registro.condicionesOperacion;
+
+            const botonEditar = document.createElement('button');
+            botonEditar.className = 'boton-accion boton-editar';
+            botonEditar.innerHTML =
+                '<img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/edit.svg" alt="Editar" class="icono-boton"> Editar';
+            botonEditar.addEventListener('click', () => editarRegistro(registro));
+            accionesCell.appendChild(botonEditar);
+
+            const botonEliminar = document.createElement('button');
+            botonEliminar.className = 'boton-accion boton-eliminar';
+            botonEliminar.innerHTML =
+                '<img src="https://cdn.jsdelivr.net/npm/lucide-static@latest/icons/trash-2.svg" alt="Eliminar" class="icono-boton"> Eliminar';
+            botonEliminar.addEventListener('click', () => eliminarRegistro(registro));
+            accionesCell.appendChild(botonEliminar);
+            tablaRegistrosElement.style.display = 'table';
+        }
+
+        function editarRegistro(registro) {
+            mensajeAlerta.textContent = `Editando registro del ${registro.fechaRegistro}. Esta función aún no está implementada.`;
+            mensajeAlerta.style.display = 'block';
+            setTimeout(() => {
+                mensajeAlerta.style.display = 'none';
+            }, 5000);
+        }
+
+        function eliminarRegistro(registro) {
+            const indice = registros.findIndex((r) => r === registro);
+            if (indice !== -1) {
+                registros.splice(indice, 1);
+
+                kilometrajeAcumulado = registros.reduce((acc, curr) => acc + curr.kilometraje, 0);
+                horasUsoAcumuladas = registros.reduce((acc, curr) => acc + curr.horasUso, 0);
+
+                kilometrajeActualSpan.textContent = kilometrajeAcumulado;
+                horasUsoActualSpan.textContent = horasUsoAcumuladas;
+
+                actualizarGraficos();
+
+                mensajeExito.textContent = 'Registro eliminado con éxito.';
+                mensajeExito.style.display = 'block';
+                setTimeout(() => {
+                    mensajeExito.style.display = 'none';
+                }, 5000);
+
+                guardarRegistros();
+                renderizarRegistros();
+            }
+        }
+
+        function renderizarRegistros() {
+            listaRegistros.innerHTML = '';
+            tablaRegistrosBody.innerHTML = '';
+            if (registros.length === 0) {
+                tablaRegistrosElement.style.display = 'none';
+            } else {
+                registros.forEach((registro) => {
+                    agregarRegistroALista(registro);
+                    agregarRegistroATabla(registro);
+                });
+            }
+        }
+
+        function cargarRegistros() {
+            const registrosGuardados = localStorage.getItem('registrosCamion');
+            if (registrosGuardados) {
+                registros = JSON.parse(registrosGuardados);
+                if (registros.length > 0) {
+                    kilometrajeAcumulado = registros.reduce((acc, curr) => acc + curr.kilometraje, 0);
+                    horasUsoAcumuladas = registros.reduce((acc, curr) => acc + curr.horasUso, 0);
+                }
+            }
+        }
+
+        function guardarRegistros() {
+            localStorage.setItem('registrosCamion', JSON.stringify(registros));
+        }
+
+        registroForm.addEventListener('submit', (event) => {
+            event.preventDefault();
+
+            const kilometrajeInput = document.getElementById('kilometraje');
+            const horasUusoInput = document.getElementById('horas-uso');
+            const condicionesOperacionInput = document.getElementById('condiciones-operacion');
+            const fechaRegistroInput = document.getElementById('fecha-registro');
+
+            const kilometraje = parseFloat(kilometrajeInput.value);
+            const horasUso = parseFloat(horasUusoInput.value);
+            const condicionesOperacion = condicionesOperacionInput.value;
+            const fechaRegistro = fechaRegistroInput.value;
+
+            if (kilometraje < 0 || horasUso < 0) {
+                mensajeError.textContent =
+                    'Por favor, ingrese valores válidos para kilometraje y horas de uso.';
+                mensajeError.style.display = 'block';
+                return;
+            }
+
+            mensajeError.style.display = 'none';
+
+            kilometrajeAcumulado += kilometraje;
+            horasUsoAcumuladas += horasUso;
+            const nuevoRegistro = {
+                fechaRegistro,
+                kilometraje,
+                horasUso,
+                condicionesOperacion,
+                kilometrajeAcumulado,
+                horasUsoAcumuladas
+            };
+            registros.push(nuevoRegistro);
+
+            kilometrajeActualSpan.textContent = kilometrajeAcumulado;
+            horasUsoActualSpan.textContent = horasUsoAcumuladas;
+            condicionesOperacionActualSpan.textContent = condicionesOperacion;
+            fechaRegistroActualSpan.textContent = fechaRegistro;
+
+            const desgasteKilometrajeEstimado = kilometrajeAcumulado * 0.1;
+            const desgasteHorasEstimado = horasUsoAcumuladas * 0.05;
+
+            desgasteKilometrajeSpan.textContent = desgasteKilometrajeEstimado.toFixed(2);
+            desgasteHorasSpan.textContent = desgasteHorasEstimado.toFixed(2);
+
+            let recomendacion = 'Mantenimiento de rutina recomendado.';
+            if (desgasteKilometrajeEstimado > 10000 || desgasteHorasEstimado > 500) {
+                recomendacion = 'Inspección y mantenimiento mayor requeridos.';
+            } else if (desgasteKilometrajeEstimado > 5000 || desgasteHorasEstimado > 250) {
+                recomendacion = 'Revisar componentes clave en el próximo mantenimiento.';
+            }
+
+            recomendacionMantenimientoSpan.textContent = recomendacion;
+
+            agregarRegistroALista(nuevoRegistro);
+            agregarRegistroATabla(nuevoRegistro);
+            actualizarGraficos();
+            guardarRegistros();
+
+            mensajeExito.textContent = 'Registro guardado con éxito.';
+            mensajeExito.style.display = 'block';
+            setTimeout(() => {
+                mensajeExito.style.display = 'none';
+            }, 5000);
+
+            registroForm.reset();
+        });
+
+        cargarRegistros();
+        inicializarGraficos();
+        renderizarRegistros();
+    </script>
+</body>
+</html>
+
+    <script type="module" src="script.js"></script>
+  </body>
+</html>
